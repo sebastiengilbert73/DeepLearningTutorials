@@ -1,0 +1,2 @@
+#!/bin/bash
+ffmpeg -i boundary%d.png out.mp4
