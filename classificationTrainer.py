@@ -6,6 +6,7 @@ import ast
 import sys
 import matplotlib.pyplot as plt
 import LinearSeparation.linearClassifier as linearClassifier # Our linear neural network model
+import NonLinearSeparation.nonLinearClassifier as nonLinearClassifier
 import cloudsVisualizer # To display the neural network decision boundary
 
 parser = argparse.ArgumentParser()
@@ -20,6 +21,7 @@ parser.add_argument('--outputFile', help='The output text file for training data
 parser.add_argument('--saveDecisionBoundaryImages', help='Save the images showing the neural network decision boundaries',
                     dest='saveDecisionBoundaryImages', action='store_true')
 parser.set_defaults(saveDecisionBoundaryImages=False)
+parser.add_argument('--neuralNetworkArchitecture', help='The architecture of the neural network. Default: Linear', default='Linear')
 args = parser.parse_args()
 
 def main():
@@ -28,8 +30,11 @@ def main():
     features = ast.literal_eval(args.featuresList)
     numberOfFeatures = len(features)
     print ("features: {}".format(features))
-    # Create a (linear) neural network
-    neuralNetwork = linearClassifier.LinearClassifierNeuralNet(numberOfFeatures, args.numberOfClasses)
+    # Create a neural network
+    if args.neuralNetworkArchitecture == 'Linear':
+        neuralNetwork = linearClassifier.LinearClassifierNeuralNet(numberOfFeatures, args.numberOfClasses)
+    elif args.neuralNetworkArchitecture == 'TwoLayers':
+        neuralNetwork = nonLinearClassifier.TwoLayersClassificationNeuralNet(numberOfFeatures, 7, args.numberOfClasses)
     # Load the data
     trainingInputsTensor, trainingTargetOutputsTensor, validationInputsTensor, validationTargetOutputsTensor =\
         SplitExamplesInTensors(args.datasetFilename, args.validationProportion, features)
